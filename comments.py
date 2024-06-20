@@ -54,52 +54,40 @@ def get_comments_thread(youtube, video_id, next_page_token=''):
     return results
 
 def load_comments_in_format(comments):
-    """
-    Formats the retrieved comments into a single string.
-
-    Args:
-        comments (dict): The API response containing comments.
-
-    Returns:
-        str: All comments concatenated into a single string.
-    """
+    all_comments = []
     all_comments_string = ""
     for thread in comments["items"]:
-        # Get top-level comment
-        comment_content = thread['snippet']['topLevelComment']['snippet']['textOriginal']
-        all_comments_string += comment_content + "\n"
-        
-        # Get replies to the top-level comment, if any
+        comment = {}
+        comment['content'] = thread['snippet']['topLevelComment']['snippet']['textOriginal']
+        all_comments_string = all_comments_string + comment['content']+"\n"
+        replies = []
         if 'replies' in thread:
             for reply in thread['replies']['comments']:
                 reply_text = reply['snippet']['textOriginal']
-                all_comments_string += reply_text + "\n"
-    
+                all_comments_string = all_comments_string + reply_text+"\n"
+                replies.append(reply_text)
+            comment['replies'] = replies
+        
+        all_comments.append(comment)
     return all_comments_string
 
 def fetch_comments(url):
-    """
-    Fetches comments from a YouTube video URL.
-
-    Args:
-        url (str): The URL of the YouTube video.
-
-    Returns:
-        str: All comments from the video concatenated into a single string.
-    """
     youtube = start_youtube_service()
     video_id = extract_video_id_from_link(url)
     next_page_token = ''
-    all_comments_string = ""
-    
-    # Retrieve comments from the first page
+   
     data = get_comments_thread(youtube, video_id, next_page_token)
-    all_comments_string += load_comments_in_format(data)
-    
-    # Paginate through remaining comments
-    while "nextPageToken" in data:
-        next_page_token = data["nextPageToken"]
-        data = get_comments_thread(youtube, video_id, next_page_token)
-        all_comments_string += load_comments_in_format(data)
+    # if "nextPageToken" in data:
+    #     next_page_token = data["nextPageToken"]
+    # all_comments = load_comments_in_format(data)
 
-    return all_comments_string
+    # while next_page_token:
+    #     data = get_comments_thread(youtube, video_id, next_page_token)
+    #     if "nextPageToken" in data:
+    #         next_page_token = data["nextPageToken"]
+    #     else:
+    #         next_page_token = ''
+    #     all_comments = all_comments + load_comments_in_format(data)
+
+    all_comments = load_comments_in_format(data)
+    return all_comments

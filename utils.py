@@ -40,6 +40,6 @@ def get_summary(text, gemini_api_key):
     )
 
     # Invoke Chain
-    response = chain.run(chunks)
+    response = chain.invoke(chunks)
 
-    return response
+    return response['output_text']

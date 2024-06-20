@@ -82,6 +82,7 @@ if navigation == "Home":
 
         .summary-container {
             background-color: #262730;
+            color: #ffffff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -162,9 +163,9 @@ elif navigation == "Video Stats":
             margin-bottom: 20px;
         }
 
-        .channel-logo {
-            width: 80px;
-            height: 80px;
+        img {
+            max-width: 80px;
+            max-height: 80px;
             border-radius: 50%;
             margin-right: 20px;
         }
